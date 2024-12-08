@@ -12,6 +12,9 @@ def main(fight_type :str, bound_boost:float, operator_bias_boost:float):
     operators = [('+', operator.add), ('-', operator.sub), ('*', operator.mul), ('/' , operator.truediv)]
     operator_bias = TYPES[fight_type][2] * operator_bias_boost
 
+    # prevent bias from reaching over 1
+    operator_bias = 1 if operator_bias > 1 else operator_bias
+
     # weights for [add, sub, mul, div]
     operators_weights = [operator_bias, operator_bias, 1 - operator_bias, 1 - operator_bias]
 
