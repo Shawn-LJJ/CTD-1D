@@ -2,21 +2,19 @@ import asyncio
 
 user_input = None
 
-async def get_input(timeout):
+async def get_input(timeout, enemy_type = None):
     try:
         global user_input
-        # user_input = await asyncio.to_thread(lambda : input(f'Enter shit within {timeout} sec: '))
+        print(f'You have {timeout} seconds to answer this question.')
         user_input = await asyncio.to_thread(input)
     except asyncio.CancelledError:
-        print('Cancelled')
+        print('You have failed to answer the question on time.')
+        print('Press enter to continue...')
         raise
 
 async def countdown(timeout):
-    # print('Time remaining: ', end='\n')
-    for i in range(0, timeout):
-        print(f'Time remaining: {timeout - i} seconds\rEnter your shit: ', end='\r')
-        await asyncio.sleep(1)
-    print()
+    await asyncio.sleep(timeout)
+    print('\nTime is out!')
 
 async def main(timeout):
     in_task = asyncio.create_task(get_input(timeout))

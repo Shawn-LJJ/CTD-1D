@@ -1,13 +1,28 @@
 from Game.map import Map
-from Game.async_input import main as input_w_timer
-from time import sleep
+from Game.functions.async_input import main as input_w_timer
+from Game.functions.question_generator import main as question_gen
 import asyncio
+import os
+
+cmd_clear = 'cls' if os.name == 'nt' else 'clear'
 
 class Logic():
     def __init__(self) -> None:
         self.stage = 'A0'
         self.map = Map()
         self.time = 180
+
+        # boost
+        # {'fight type' : [random number upper bound limit boost, add/sub operator bias]}
+        self.fight_boosts = {
+            'battle' : [1, 1],
+            'elite' : [1, 1],
+            'boss' : [1, 1]
+        }
+
+        # stats
+        self.num_of_fights = 0
+        self.num_of_victory = 0
     
     # the actual game logic in place
     def start(self) -> None:
@@ -15,34 +30,33 @@ class Logic():
         while True:
 
             # draw the map
-            self.map.draw()
+            self.map.draw_map()
+            self.map.draw_map_movement()
 
-            # get next possible moves
-            possible_moves = self.map.get_next_possible_pos()
+            # prompt for user input for movement and then get the action
+            action = self.map.move()
+            
+            # check which domain is activated and see what action to do
+            if action == 'occurence':
+                pass
 
-            # wait for user input for selecting node and validate for where the player can go next (reprompt if is an invalid option)
-            while True:
-                # prompt and validate
-                print(f'\nYour next available move choice: {", ".join(possible_moves)}')
-                userInput = input('Pick your next move: ').strip().upper()
-                if userInput in possible_moves:
-                    break
-                print('\nInvalid move')
-                sleep(0.5)
+            else:
+                
+                answer = question_gen(action, self.fight_boosts[action][0], self.fight_boosts[action][1])
+                # fight the enemy/boss
+                user_input = asyncio.run(input_w_timer(10))
 
-            # move to the new position
-            self.map.update(userInput)
-
-            # get list of possible actions
-            possible_actions = self.map.get_actions()
-
-            # fight the enemy/boss
-            user_input = asyncio.run(input_w_timer(3))
-            print(user_input)
+                os.system(cmd_clear)
+                if user_input is not None:
+                    print(f'Your answer is {user_input}')
+                    print('But you are correct/wrong')
+                    input('Press enter to continue...')
 
             # if defeated an enemy, then reward something, and unlock new path
             # if defeated a boss, game ends
 
             # but if an enemy/boss is undefeated, then how?
 
-            break
+            os.system(cmd_clear)
+            if action == 'boss':
+                break
