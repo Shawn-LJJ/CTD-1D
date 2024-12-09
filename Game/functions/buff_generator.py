@@ -12,6 +12,17 @@ BUFFS = {
     'boss_operator_bias' : lambda : round(random.random() * 0.15, 2)
 }
 
+BUFFS_NAME = {
+    'time' : 'Time gained/lost', 
+    'positive_event_prob' : 'Positive event probability buff/debuff', 
+    'battle_upper_bound' : 'Battle math number range buff/debuff',
+    'battle_operator_bias' : 'Battle addition/subtraction operator probability buff/debuff',
+    'elite_upper_bound' : 'Elite math number range buff/debuff',
+    'elite_operator_bias' : 'Elite addition/subtraction operator probability buff/debuff',
+    'boss_upper_bound' : 'Boss math number range buff/debuff',
+    'boss_operator_bias' : 'Boss addition/subtraction operator probability buff/debuff'
+}
+
 def main(buff_or_debuff, num = 1) -> list:
     buffs = choice(list(BUFFS.keys()), size=num, replace=False)
     final_buffs = []

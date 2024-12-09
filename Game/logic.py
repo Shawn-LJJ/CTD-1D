@@ -1,7 +1,7 @@
 from Game.map import Map
 from Game.functions.async_input import main as input_w_timer
 from Game.functions.question_generator import main as question_gen
-from Game.functions.buff_generator import main as buff_gen
+from Game.functions.buff_generator import main as buff_gen, BUFFS_NAME
 from Game.functions.gambling import main as gambling
 import asyncio
 import os
@@ -34,6 +34,15 @@ class Logic():
     def start(self) -> None:
 
         while True:
+
+            # show time statistics
+            os.system(cmd_clear)
+            print(f'\nStatistics:')
+            print(f'Boss fight time: {self.time}')
+            print(f'Number of victories: {self.num_of_victory}')
+            print(f'Number of fights: {self.num_of_fights}')
+            print(f'Buffs: {", ".join(self.buffs)}')
+            print('\n-----------------------------------')
 
             # draw the map
             self.map.draw_map()
@@ -79,12 +88,14 @@ class Logic():
                     try:
                         print(f'\nYour available {buff_or_debuff}: ')
                         for i in range(len(buffs)):
-                            print(f'{i + 1}. {buffs[i]}')
-                        print('4. Gambling.')
+                            buff_name, buff_value = list(buffs[i].items())[0]
+                            print(f'{i + 1}. {BUFFS_NAME[buff_name]} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
+                        if buff_or_debuff == 'buff':
+                            print('4. Gambling.')
                         buff_input = input(f'\nChoose your option: ')
 
                         user_option = int(buff_input)
-                        if user_option != 4:
+                        if user_option != 4 or buff_or_debuff == 'debuff':
                             chosen_buff = buffs[int(buff_input) - 1]
                         else:
                             chosen_buff = None
@@ -104,7 +115,8 @@ class Logic():
                             try:
                                 print('\nYour available buff after gambling: ')
                                 for i in range(len(buffs)):
-                                    print(f'{i + 1}. {buffs[i]}')
+                                    buff_name, buff_value = list(buffs[i].items())[0]
+                                    print(f'{i + 1}. {BUFFS_NAME[buff_name]} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
                                 buff_input = input(f'\nChoose your option: ')
                                 chosen_buff = buffs[int(buff_input) - 1]
                                 break
@@ -125,14 +137,18 @@ class Logic():
                             try:
                                 print('\nYour available debuff after gambling: ')
                                 for i in range(len(buffs)):
-                                    print(f'{i + 1}. {buffs[i]}')
+                                    buff_name, buff_value = list(buffs[i].items())[0]
+                                    print(f'{i + 1}. {BUFFS_NAME[buff_name]} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
                                 buff_input = input(f'\nChoose your option: ')
                                 chosen_buff = buffs[int(buff_input) - 1]
                                 break
                             except:
-                                print(f'\nInvalid debuff option.')
+                                print(f'\nInvalid debuff option.')                    
 
                 buff_name, buff_value = list(chosen_buff.items())[0]
+
+                buff_detail = f'{BUFFS_NAME[buff_name]} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})'
+                self.buffs.append(buff_detail)
 
                 if buff_name == 'time':
                     self.time += buff_value
@@ -149,24 +165,34 @@ class Logic():
                     if self.fight_boosts[fight_type][mul_type] < 0:
                         self.fight_boosts[fight_type][mul_type] = 0
 
-                print(self.fight_boosts)
-                print(self.time)
-                input('Press enter to continue...')
-
             else:
                 
                 answer = question_gen(action, self.fight_boosts[action][0], self.fight_boosts[action][1])
                 # fight the enemy/boss
-                user_input = asyncio.run(input_w_timer(time_needed))
+                user_input, dt = asyncio.run(input_w_timer(time_needed))
 
                 os.system(cmd_clear)
-                if user_input is not None:
+                if user_input is None:
+                    print('You have fail to fight on time.')
+                    if action == 'battle':
+                        print('You will lost 5 seconds of your boss fight time.')
+                        self.time -= 5
+                        print(f'Your new boss time fight is now {self.time} seconds.')
+                    elif action == 'elite':
+                        print(f'You had lost your wager and will lose {time_bonus} seconds.')
+                        self.time -= time_bonus
+                        print(f'Your new boss time fight is now {self.time} seconds.')
+                    
+                    elif action == 'boss':
+                        print('Game over!')
+                else:
                     print(f'Your answer is {user_input}.')
 
                     try:
 
                         if float(user_input) == answer:
                             print('You are correct!')
+                            print(f'You spent {dt} seconds on fighting')
                             self.num_of_victory += 1
 
                             if action == 'battle' or action == 'elite':
@@ -182,8 +208,13 @@ class Logic():
                     
                     except:
                         print(f'You are wrong. The correct answer is {answer}')
+                        print(f'You spent {dt} seconds on fighting')
 
-                        if action == 'elite':
+                        if action == 'battle':
+                            print('You will lost 5 seconds of your boss fight time.')
+                            self.time -= 5
+                            print(f'Your new boss time fight is now {self.time} seconds.')
+                        elif action == 'elite':
                             print(f'You had lost your wager and will lose {time_bonus} seconds.')
                             self.time -= time_bonus
                             print(f'Your new boss time fight is now {self.time} seconds.')
@@ -191,10 +222,23 @@ class Logic():
                         elif action == 'boss':
                             print('Game over!')
 
-                    input('Press enter to continue...')
+                input('Press enter to continue...')
                 
                 self.num_of_fights += 1
 
             os.system(cmd_clear)
+
             if action == 'boss':
+                print('Statistics:')
+                print(f'Boss fight time: {self.time}')
+                print(f'Remaining boss fight time: {dt}')
+                print(f'Number of victories: {self.num_of_victory}')
+                print(f'Number of fights: {self.num_of_fights}')
+                print(f'Buffs: {", ".join(self.buffs)}')
+                input('Press enter to continue...')
+                break
+
+            if self.time < 1:
+                print('Game over. You ran out of boss time to fight before you reach the boss.')
+                input('Press enter to continue...')
                 break

@@ -5,7 +5,7 @@ def main(timer):
     
     while True:
         try:
-            wager = int(input("How much you wanna risk?: "))
+            wager = int(input(f"How much you wanna risk? (Max: {timer}): "))
         except:
             print("Invalid input")
             continue
