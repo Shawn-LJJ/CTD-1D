@@ -14,13 +14,13 @@ BUFFS = {
 
 BUFFS_NAME = {
     'time' : 'Time gained/lost', 
-    'positive_event_prob' : 'Positive event probability buff/debuff', 
-    'battle_upper_bound' : 'Battle math number range buff/debuff',
-    'battle_operator_bias' : 'Battle addition/subtraction operator probability buff/debuff',
-    'elite_upper_bound' : 'Elite math number range buff/debuff',
-    'elite_operator_bias' : 'Elite addition/subtraction operator probability buff/debuff',
-    'boss_upper_bound' : 'Boss math number range buff/debuff',
-    'boss_operator_bias' : 'Boss addition/subtraction operator probability buff/debuff'
+    'positive_event_prob' : 'Positive event probability', 
+    'battle_upper_bound' : 'Battle math number range',
+    'battle_operator_bias' : 'Battle addition/subtraction operator probability',
+    'elite_upper_bound' : 'Elite math number range',
+    'elite_operator_bias' : 'Elite addition/subtraction operator probability',
+    'boss_upper_bound' : 'Boss math number range',
+    'boss_operator_bias' : 'Boss addition/subtraction operator probability'
 }
 
 def main(buff_or_debuff, num = 1) -> list:

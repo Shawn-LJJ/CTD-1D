@@ -89,7 +89,7 @@ class Logic():
                         print(f'\nYour available {buff_or_debuff}: ')
                         for i in range(len(buffs)):
                             buff_name, buff_value = list(buffs[i].items())[0]
-                            print(f'{i + 1}. {BUFFS_NAME[buff_name]} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
+                            print(f'{i + 1}. {BUFFS_NAME[buff_name]} {buff_or_debuff} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
                         if buff_or_debuff == 'buff':
                             print('4. Gambling.')
                         buff_input = input(f'\nChoose your option: ')
@@ -114,9 +114,11 @@ class Logic():
                         while True:
                             try:
                                 print('\nYour available buff after gambling: ')
+                                buffs = buff_gen('buff', 3)
+                                buff_or_debuff = 'buff'
                                 for i in range(len(buffs)):
                                     buff_name, buff_value = list(buffs[i].items())[0]
-                                    print(f'{i + 1}. {BUFFS_NAME[buff_name]} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
+                                    print(f'{i + 1}. {BUFFS_NAME[buff_name]} buff ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
                                 buff_input = input(f'\nChoose your option: ')
                                 chosen_buff = buffs[int(buff_input) - 1]
                                 break
@@ -136,9 +138,11 @@ class Logic():
                         while True:
                             try:
                                 print('\nYour available debuff after gambling: ')
+                                buffs = buff_gen('debuff', 3)
+                                buff_or_debuff = 'debuff'
                                 for i in range(len(buffs)):
                                     buff_name, buff_value = list(buffs[i].items())[0]
-                                    print(f'{i + 1}. {BUFFS_NAME[buff_name]} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
+                                    print(f'{i + 1}. {BUFFS_NAME[buff_name]} debuff ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
                                 buff_input = input(f'\nChoose your option: ')
                                 chosen_buff = buffs[int(buff_input) - 1]
                                 break
@@ -147,7 +151,7 @@ class Logic():
 
                 buff_name, buff_value = list(chosen_buff.items())[0]
 
-                buff_detail = f'{BUFFS_NAME[buff_name]} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})'
+                buff_detail = f'{BUFFS_NAME[buff_name]} {buff_or_debuff} ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})'
                 self.buffs.append(buff_detail)
 
                 if buff_name == 'time':
