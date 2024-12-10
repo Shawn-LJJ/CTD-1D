@@ -12,7 +12,6 @@ cmd_clear = 'cls' if os.name == 'nt' else 'clear'
 class Logic():
     def __init__(self) -> None:
         # player data
-        self.stage = 'A0'
         self.map = Map()
         self.time = 30
         self.positive_event_prob = 0.5
@@ -111,11 +110,10 @@ class Logic():
                         print(f'Due to your big win with 3 matches, you have added {wager} seconds into your boss fight time and you get to choose a buff.')
                         print(f'Your new boss fight time: {self.time} seconds.')
                         buffs = buff_gen('buff', 3)
+                        buff_or_debuff = 'buff'
                         while True:
                             try:
-                                print('\nYour available buff after gambling: ')
-                                buffs = buff_gen('buff', 3)
-                                buff_or_debuff = 'buff'
+                                print('\nYour available buff after gambling: ')                                
                                 for i in range(len(buffs)):
                                     buff_name, buff_value = list(buffs[i].items())[0]
                                     print(f'{i + 1}. {BUFFS_NAME[buff_name]} buff ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
@@ -135,11 +133,10 @@ class Logic():
                         print(f'You had lost the gambling. You lost {wager} seconds of boss fight and you have to pick a debuff.')
                         print(f'Your new boss fight time: {self.time} seconds.')
                         buffs = buff_gen('debuff', 3)
+                        buff_or_debuff = 'debuff'
                         while True:
                             try:
                                 print('\nYour available debuff after gambling: ')
-                                buffs = buff_gen('debuff', 3)
-                                buff_or_debuff = 'debuff'
                                 for i in range(len(buffs)):
                                     buff_name, buff_value = list(buffs[i].items())[0]
                                     print(f'{i + 1}. {BUFFS_NAME[buff_name]} debuff ({buff_value if buff_name == "time" else buff_value * 100}{" seconds" if buff_name == "time" else "%"})')
@@ -179,7 +176,7 @@ class Logic():
                 if user_input is None:
                     print('You have fail to fight on time.')
                     if action == 'battle':
-                        print('You will lost 5 seconds of your boss fight time.')
+                        print('You will lose 5 seconds of your boss fight time.')
                         self.time -= 5
                         print(f'Your new boss time fight is now {self.time} seconds.')
                     elif action == 'elite':
@@ -215,7 +212,7 @@ class Logic():
                         print(f'You spent {dt} seconds on fighting')
 
                         if action == 'battle':
-                            print('You will lost 5 seconds of your boss fight time.')
+                            print('You will lose 5 seconds of your boss fight time.')
                             self.time -= 5
                             print(f'Your new boss time fight is now {self.time} seconds.')
                         elif action == 'elite':

@@ -4,10 +4,10 @@ import time
 user_input = None
 dt = 0
 
-async def get_input(timeout, enemy_type = None):
+async def get_input(timeout):
     try:
         global user_input
-        print(f'You have {timeout} seconds to answer this question.')
+        print(f'You have {timeout} seconds to answer this question.\nPlease leave your answer in 2 decimal points if necessary')
         user_input = await asyncio.to_thread(input)
     except asyncio.CancelledError:
         print('You have failed to answer the question on time.')
